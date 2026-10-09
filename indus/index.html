@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InovaLog - Plataforma Industrial de Transporte</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <h1>🚚 InovaLog Industrial</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showSection('cargas')" class="active">Cargas</a></li>
+                <li><a href="#" onclick="showSection('acompanhamento')">Acompanhar</a></li>
+                <li><a href="#" onclick="showSection('veiculos')">Veículos</a></li>
+                <li><a href="#" onclick="showSection('motoristas')">Motoristas</a></li>
+                <li><a href="#" onclick="showSection('rotas')">Rotas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="server-status">
+            <span>Status da API Python: <strong id="apiStatus">Verificando conexão...</strong></span>
+            <span style="font-size: 11px; color: #64748b;">Módulo de Logística v1.0</span>
+        </div>
+
+        <div id="cargas" class="section active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h2>📦 Cadastrar Nova Carga</h2>
+                    <form id="formCarga" onsubmit="addCarga(event)">
+                        <div class="form-group">
+                            <label>Descrição da Matéria-Prima / Produto:</label>
+                            <input type="text" id="descCarga" required placeholder="Ex: Bobina de Aço 5t">
+                        </div>
+                        <div class="form-group">
+                            <label>Destino Industrial:</label>
+                            <input type="text" id="destCarga" required placeholder="Ex: Filial São Paulo - SP">
+                        </div>
+                        <div class="form-group">
+                            <label>Veículo Atribuído:</label>
+                            <select id="selectVeiculoCarga"></select>
+                        </div>
+                        <button type="submit">Salvar e Registrar Carga</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>🔍 Consulta de Cargas</h2>
+                    <div class="form-group">
+                        <label>Filtrar por descrição:</label>
+                        <input type="text" id="filtroCarga" onkeyup="carregarDados()" placeholder="Digite para buscar...">
+                    </div>
+                    <div class="table-responsive">
+                        <table id="tabelaCargas">
+                            <thead>
+                                <tr><th>ID</th><th>Descrição</th><th>Destino</th><th>Veículo</th><th>Status</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="acompanhamento" class="section">
+            <div class="card full-width">
+                <h2>📡 Acompanhamento de Transporte em Tempo Real</h2>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Altere o fluxo logístico clicando no botão de status de cada carga em trânsito.</p>
+                <div class="table-responsive">
+                    <table id="tabelaAcompanhamento">
+                        <thead>
+                            <tr><th>ID</th><th>Descrição</th><th>Destino</th><th>Status Atual</th><th>Gerenciar</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="veiculos" class="section">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h2>🚛 Cadastro de Frota</h2>
+                    <form id="formVeiculo" onsubmit="addVeiculo(event)">
+                        <div class="form-group">
+                            <label>Modelo do Caminhão:</label>
+                            <input type="text" id="modeloVeiculo" required placeholder="Ex: Volvo FH 540">
+                        </div>
+                        <div class="form-group">
+                            <label>Placa:</label>
+                            <input type="text" id="placaVeiculo" required placeholder="Ex: ABC-1234">
+                        </div>
+                        <button type="submit">Cadastrar Veículo</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h2>📋 Veículos Disponíveis</h2>
+                    <div class="table-responsive">
+                        <table id="tabelaVeiculos">
+                            <thead><tr><th>ID</th><th>Modelo</th><th>Placa</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="motoristas" class="section">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h2>👤 Cadastro de Motoristas</h2>
+                    <form id="formMotorista" onsubmit="addMotorista(event)">
+                        <div class="form-group">
+                            <label>Nome Completo:</label>
+                            <input type="text" id="nomeMotorista" required placeholder="Ex: Carlos Silva">
+                        </div>
+                        <div class="form-group">
+                            <label>Registro CNH:</label>
+                            <input type="text" id="cnhMotorista" required placeholder="Ex: 00000000000">
+                        </div>
+                        <button type="submit">Cadastrar Motorista</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h2>📋 Equipe de Motoristas</h2>
+                    <div class="table-responsive">
+                        <table id="tabelaMotoristas">
+                            <thead><tr><th>ID</th><th>Nome</th><th>CNH</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="rotas" class="section">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h2>🗺️ Cadastro de Rotas</h2>
+                    <form id="formRota" onsubmit="addRota(event)">
+                        <div class="form-group">
+                            <label>Origem:</label>
+                            <input type="text" id="origemRota" required placeholder="Ex: Fábrica Matriz - PR">
+                        </div>
+                        <div class="form-group">
+                            <label>Destino:</label>
+                            <input type="text" id="destinoRota" required placeholder="Ex: Centro de Distribuição - SC">
+                        </div>
+                        <div class="form-group">
+                            <label>Distância Estimada (Km):</label>
+                            <input type="number" id="kmRota" required placeholder="Ex: 350">
+                        </div>
+                        <button type="submit">Cadastrar Rota</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h2>📋 Rotas Mapeadas</h2>
+                    <div class="table-responsive">
+                        <table id="tabelaRotas">
+                            <thead><tr><th>ID</th><th>Origem</th><th>Destino</th><th>Distância</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
